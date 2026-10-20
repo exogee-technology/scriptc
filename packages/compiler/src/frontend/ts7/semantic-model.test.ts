@@ -24,6 +24,7 @@ import {
   type Type,
 } from "typescript/unstable/sync";
 import {
+  escapeLeadingUnderscores,
   SemanticNodeHandle,
   SemanticSnapshot,
   SemanticType,
@@ -318,6 +319,23 @@ test("symbol tables keep escaped keys, display names, canonical context and cach
   expect(parent.getExportSymbol()).toBe(first.symbol(symbol(3)));
   expect(requests.every((request) => request.query["project"] === first.id)).toBe(true);
   expect(requests).toHaveLength(4);
+});
+
+test("escapeLeadingUnderscores spells the table key symbolName reads back", () => {
+  const { first, answers, symbol } = harness();
+  const parent = first.symbol(symbol(1));
+  const names = ["x", "_x", "__x", "___x"];
+  answers.set(
+    "getExportsOfSymbol",
+    names.map((name, i) =>
+      symbol(i + 2, { name: escapeLeadingUnderscores(name) as string as SymbolResponse["name"] }),
+    ),
+  );
+  expect(names.map(escapeLeadingUnderscores)).toEqual(["x", "_x", "___x", "____x"]);
+  const exports = parent.getExports();
+  for (const name of names) {
+    expect(symbolNameOf(exports.get(escapeLeadingUnderscores(name)))).toBe(name);
+  }
 });
 
 test("signature handles use type, symbol and signature registries independently", () => {

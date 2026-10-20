@@ -1,0 +1,9 @@
+{
+ "order": [
+  "<repo>/tests/corpus/6593-dunder-exports/dep.ts",
+  "<repo>/tests/corpus/6593-dunder-exports/star.ts",
+  "<repo>/tests/corpus/6593-dunder-exports/mid.ts",
+  "<repo>/tests/corpus/6593-dunder-exports/main.ts"
+ ],
+ "diags": []
+}

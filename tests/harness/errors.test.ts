@@ -694,6 +694,27 @@ export type Other = string;
     );
   });
 
+  test("a double-underscore interface import fails like any other", async () => {
+    const r = await compileAndRun(
+      "esm-type-link-dunder",
+      `import { value, __Shape as MissingShape } from './types.ts';
+console.log('never runs', value);
+`,
+      "ts",
+      {
+        "types.ts": `export interface __Shape { value: number }
+export const value = 7;
+console.log('types evaluated');
+`,
+      },
+    );
+    expect(r.exitCode).toBe(1);
+    expect(r.stdout).toBe("");
+    expect(r.stderr).toBe(
+      "Uncaught SyntaxError: The requested module './types.ts' does not provide an export named '__Shape'\n",
+    );
+  });
+
   test("native compilation retains the ESM link failure", async () => {
     const r = await compileAndRun(
       "esm-type-link-dynamic",

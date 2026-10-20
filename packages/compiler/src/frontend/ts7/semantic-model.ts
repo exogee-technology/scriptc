@@ -400,6 +400,12 @@ export function symbolName(symbol: SemanticSymbol): string {
   return name.startsWith("___") ? name.slice(1) : name;
 }
 
+/** The member and export table key for `name`, the inverse of `symbolName`: a name that starts
+ * with `__` gains an extra `_`. */
+export function escapeLeadingUnderscores(name: string): __String {
+  return (name.startsWith("__") ? "_" + name : name) as __String;
+}
+
 /** `symbolName(symbol)`, or undefined without a symbol. */
 export function symbolNameOf(symbol: SemanticSymbol | null | undefined): string | undefined {
   return symbol === undefined || symbol === null ? undefined : symbolName(symbol);
